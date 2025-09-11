@@ -1,12 +1,12 @@
+// migrations/migrate.js
 const fs = require('fs').promises;
 const path = require('path');
-const { pool } = require('../config/database');
+const db = require('../config/database'); // db.pool will be the promise-based pool
 
 async function runMigrations() {
   try {
     console.log('Starting database migrations...');
 
-    // List of migration files in order
     const migrationFiles = [
       '001_create_users_table.sql',
       '002_create_colleges_table.sql'
@@ -16,19 +16,24 @@ async function runMigrations() {
       const migrationPath = path.join(__dirname, file);
       console.log(`\n📄 Running migration: ${file}`);
 
-      // Read file content
       const migrationSQL = await fs.readFile(migrationPath, 'utf8');
 
-      // Split by semicolons and filter out empty statements
+      // Split statements properly
       const statements = migrationSQL
-        .split(';')
+        .split(/;\s*$/m)
         .map(stmt => stmt.trim())
         .filter(stmt => stmt.length > 0);
 
-      // Execute each statement
+      console.log(`➡️ Executing ${statements.length} statements...`);
+
       for (const statement of statements) {
-        console.log('➡️ Executing:', statement.substring(0, 60) + '...');
-        await pool.execute(statement);
+        try {
+          // Use the promise pool
+          await db.pool.execute(statement);
+        } catch (stmtError) {
+          console.error(`❌ Error executing statement: ${statement.substring(0, 60)}...`);
+          throw stmtError;
+        }
       }
     }
 
@@ -37,7 +42,7 @@ async function runMigrations() {
     console.error('\n❌ Migration failed:', error.message);
     process.exit(1);
   } finally {
-    await pool.end();
+    await db.pool.end();
   }
 }
 

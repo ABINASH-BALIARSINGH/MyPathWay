@@ -9,62 +9,80 @@ class User {
     this.name = data.name;
     this.email = data.email;
     this.password_hash = data.password_hash;
-    this.role = data.role;
+    this.role = data.role || 'learner';
     this.avatar = data.avatar;
-    this.is_active = data.is_active;
-    this.email_verified = data.email_verified;
-    this.courses_completed = data.courses_completed;
-    this.total_courses = data.total_courses;
-    this.certificates_earned = data.certificates_earned;
-    this.tests_taken = data.tests_taken;
-    this.average_score = data.average_score;
-    this.skills = Array.isArray(data.skills) ? data.skills : [];
+    this.is_active = data.is_active !== undefined ? data.is_active : true;
+    this.email_verified = data.email_verified || false;
+    this.skills = [];
+      try {
+        this.skills = data.skills ? JSON.parse(data.skills) : [];
+      } catch (err) {
+        this.skills = [];
+      }
+
+      this.courses_completed = [];
+      try {
+        this.courses_completed = data.courses_completed ? JSON.parse(data.courses_completed) : [];
+      } catch (err) {
+        this.courses_completed = [];
+      }
+
+    this.total_courses = data.total_courses || 0;
+    this.certificates_earned = data.certificates_earned || 0;
+    this.tests_taken = data.tests_taken || 0;
+    this.average_score = data.average_score || 0;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
     this.last_login = data.last_login;
   }
 
+  // ------------------ FIND BY ID ------------------
   static async findById(id) {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE id = ? AND is_active = TRUE', [id]);
+    const [rows] = await pool.execute(
+      'SELECT * FROM users WHERE id = ? AND is_active = TRUE',
+      [id]
+    );
     if (!rows[0]) return null;
-    const data = rows[0];
-    try {
-      data.skills = data.skills ? JSON.parse(data.skills) : [];
-    } catch {
-      data.skills = [];
-    }
-    return new User(data);
+    return new User(rows[0]);
   }
 
+  // ------------------ FIND BY EMAIL ------------------
   static async findByEmail(email) {
-    const [rows] = await pool.execute('SELECT * FROM users WHERE email = ? AND is_active = TRUE', [email]);
+    const [rows] = await pool.execute(
+      'SELECT * FROM users WHERE email = ? AND is_active = TRUE',
+      [email]
+    );
     if (!rows[0]) return null;
-    const data = rows[0];
-    try {
-      data.skills = data.skills ? JSON.parse(data.skills) : [];
-    } catch {
-      data.skills = [];
-    }
-    return new User(data);
+    return new User(rows[0]);
   }
 
+  // ------------------ CREATE USER ------------------
   static async create({ name, email, password, role = 'learner' }) {
-    const hashedPassword = await bcrypt.hash(password, parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      parseInt(process.env.BCRYPT_SALT_ROUNDS) || 12
+    );
     const id = crypto.randomUUID();
 
+    const skills = JSON.stringify([]);
+    const courses_completed = JSON.stringify([]);
+
     await pool.execute(
-      `INSERT INTO users (id, name, email, password_hash, role, skills, courses_completed, total_courses, certificates_earned, tests_taken, average_score)
-       VALUES (?, ?, ?, ?, ?, ?, 0, 0, 0, 0, 0)`,
-      [id, name, email, hashedPassword, role, JSON.stringify([])]
+      `INSERT INTO users 
+        (id, name, email, password_hash, role, skills, courses_completed, total_courses, certificates_earned, tests_taken, average_score, created_at, updated_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, 0, 0, 0, 0, NOW(), NOW())`,
+      [id, name, email, hashedPassword, role, skills, courses_completed]
     );
 
     return User.findById(id);
   }
 
+  // ------------------ VERIFY PASSWORD ------------------
   async verifyPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
 
+  // ------------------ TOKEN GENERATION ------------------
   generateToken() {
     return jwt.sign(
       { userId: this.id, email: this.email, role: this.role },
@@ -73,10 +91,8 @@ class User {
     );
   }
 
-  // Session management methods (missing from your original code)
+  // ------------------ SESSION MANAGEMENT ------------------
   async storeSession(token) {
-    // For simplicity, we'll just verify the token is valid
-    // In production, you might want to store sessions in Redis or database
     try {
       jwt.verify(token, process.env.JWT_SECRET);
       return true;
@@ -96,11 +112,11 @@ class User {
   }
 
   static async logout(token) {
-    // For JWT tokens, logout is typically handled client-side by removing the token
-    // You could implement a blacklist here if needed
+    // JWT logout is client-side; could implement blacklist if needed
     return true;
   }
 
+  // ------------------ UPDATE LAST LOGIN ------------------
   async updateLastLogin() {
     await pool.execute(
       'UPDATE users SET last_login = NOW() WHERE id = ?',
@@ -109,6 +125,7 @@ class User {
     this.last_login = new Date().toISOString();
   }
 
+  // ------------------ UPDATE PROFILE ------------------
   async updateProfile(updates) {
     const allowedFields = ['name', 'avatar', 'skills'];
     const updateFields = [];
@@ -121,9 +138,7 @@ class User {
       }
     });
 
-    if (updateFields.length === 0) {
-      return this;
-    }
+    if (updateFields.length === 0) return this;
 
     updateValues.push(this.id);
     await pool.execute(
@@ -134,42 +149,33 @@ class User {
     return User.findById(this.id);
   }
 
+  // ------------------ UPDATE PROGRESS ------------------
   async updateProgress(progressData) {
-    const {
-      coursesCompleted,
-      totalCourses,
-      certificatesEarned,
-      testsTaken,
-      averageScore
-    } = progressData;
-
     const updates = [];
     const values = [];
 
-    if (coursesCompleted !== undefined) {
+    if (progressData.coursesCompleted !== undefined) {
       updates.push('courses_completed = ?');
-      values.push(coursesCompleted);
+      values.push(JSON.stringify(progressData.coursesCompleted));
     }
-    if (totalCourses !== undefined) {
+    if (progressData.totalCourses !== undefined) {
       updates.push('total_courses = ?');
-      values.push(totalCourses);
+      values.push(progressData.totalCourses);
     }
-    if (certificatesEarned !== undefined) {
+    if (progressData.certificatesEarned !== undefined) {
       updates.push('certificates_earned = ?');
-      values.push(certificatesEarned);
+      values.push(progressData.certificatesEarned);
     }
-    if (testsTaken !== undefined) {
+    if (progressData.testsTaken !== undefined) {
       updates.push('tests_taken = ?');
-      values.push(testsTaken);
+      values.push(progressData.testsTaken);
     }
-    if (averageScore !== undefined) {
+    if (progressData.averageScore !== undefined) {
       updates.push('average_score = ?');
-      values.push(averageScore);
+      values.push(progressData.averageScore);
     }
 
-    if (updates.length === 0) {
-      return this;
-    }
+    if (updates.length === 0) return this;
 
     values.push(this.id);
     await pool.execute(
@@ -180,6 +186,7 @@ class User {
     return User.findById(this.id);
   }
 
+  // ------------------ PUBLIC USER INFO ------------------
   getPublicInfo() {
     return {
       id: this.id,
@@ -189,7 +196,7 @@ class User {
       avatar: this.avatar,
       skills: this.skills,
       progress: {
-        coursesCompleted: this.courses_completed || 0,
+        coursesCompleted: this.courses_completed || [],
         totalCourses: this.total_courses || 0,
         certificatesEarned: this.certificates_earned || 0,
         testsTaken: this.tests_taken || 0,
