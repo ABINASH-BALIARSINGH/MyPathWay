@@ -205,13 +205,48 @@ class AuthController {
     }
   }
 
-  // -------------------- VERIFY TOKEN --------------------
+  // -------------------- VERIFY TOKEN (FIXED) --------------------
   static async verifyToken(req, res) {
     try {
-      res.status(200).json({ success: true, valid: true, user: req.user.getPublicInfo() });
+      console.log('--- Verify token endpoint hit ---');
+      
+      // Get token from cookie or Authorization header
+      const token = req.cookies.token || req.headers.authorization?.replace('Bearer ', '');
+      
+      if (!token) {
+        console.log('No token provided');
+        return res.status(401).json({ 
+          success: false, 
+          valid: false, 
+          message: 'No token provided' 
+        });
+      }
+
+      // Verify token and get user
+      const user = await User.verifySession(token);
+      if (!user) {
+        console.log('Invalid or expired token');
+        return res.status(401).json({ 
+          success: false, 
+          valid: false, 
+          message: 'Invalid or expired token' 
+        });
+      }
+
+      console.log('Token verification successful for user:', user.email);
+      res.status(200).json({ 
+        success: true, 
+        valid: true, 
+        user: user.getPublicInfo() 
+      });
+
     } catch (error) {
       console.error('Verify token error:', error);
-      res.status(500).json({ success: false, message: 'Internal server error' });
+      res.status(401).json({ 
+        success: false, 
+        valid: false, 
+        message: 'Token verification failed' 
+      });
     }
   }
 }

@@ -1,134 +1,93 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const { validateChatMessage } = require('../utils/validation');
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 class ChatController {
   static async sendMessage(req, res) {
     try {
-      // Validate input
-      const { error, value } = validateChatMessage(req.body);
-      if (error) {
+      console.log('--- Chat endpoint hit ---');
+      const { message } = req.body;
+
+      if (!message || !message.trim()) {
         return res.status(400).json({
           success: false,
-          message: 'Validation failed',
-          errors: error.details.map(detail => detail.message)
+          message: 'Message is required'
         });
       }
 
-      const { message } = value;
-      const user = req.user; // From authentication middleware
+      console.log('User message:', message);
 
-      // Create personalized prompt based on user data
-      const userContext = user ? `
-        User Profile:
-        - Name: ${user.name}
-        - Role: ${user.role}
-        - Skills: ${user.skills.join(', ') || 'None specified'}
-        - Progress: ${user.courses_completed}/${user.total_courses} courses completed
-        - Average Score: ${user.average_score}%
-      ` : '';
-
-      const prompt = `You are MyPathWay AI Assistant, a helpful learning companion for students and professionals. 
-      You provide personalized, encouraging, and educational responses about learning, career guidance, 
-      skill development, and academic topics. Keep responses concise but informative and supportive.
+      // Create a learning-focused prompt
+      const prompt = `You are MyPathWay AI Learning Assistant, a helpful educational AI that helps students learn and grow. 
       
-      ${userContext}
+      Instructions:
+      - Provide clear, educational responses
+      - Be encouraging and supportive
+      - Focus on learning and skill development
+      - Keep responses concise but informative
+      - If the question is about learning, studying, careers, or education, provide detailed help
+      - For other topics, still be helpful but gently guide towards educational content
       
       User question: ${message}
       
-      Please provide a helpful response tailored to their learning journey.`;
+      Please provide a helpful response:`;
 
-      // Get the generative model
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
-      // Generate content
+      // Call Gemini AI
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const aiMessage = response.text();
+      const response = result.response;
+      const aiResponse = response.text();
 
-      res.status(200).json({
+      console.log('AI response generated successfully');
+
+      res.json({
         success: true,
-        response: aiMessage,
-        user: user ? user.getPublicInfo() : null
+        response: aiResponse,
+        user: req.user ? req.user.getPublicInfo() : null
       });
 
     } catch (error) {
-      console.error('AI chat error:', error);
+      console.error('Chat error:', error);
       
-      // Handle different types of errors
-      if (error.message.includes('API_KEY')) {
-        return res.status(503).json({
-          success: false,
-          message: 'AI service is currently unavailable. Please try again later.'
-        });
+      // Fallback response if AI fails
+      let fallbackResponse = "I apologize, but I'm having trouble processing your request right now. ";
+      
+      // Provide some basic responses for common queries
+      const message = req.body.message?.toLowerCase() || '';
+      if (message.includes('react')) {
+        fallbackResponse += "React is a popular JavaScript library for building user interfaces, especially web applications. It uses a component-based architecture and virtual DOM for efficient updates.";
+      } else if (message.includes('database')) {
+        fallbackResponse += "A database is an organized collection of information designed for efficient storage, retrieval, and management. It's like a digital filing system for your data.";
+      } else if (message.includes('javascript') || message.includes('js')) {
+        fallbackResponse += "JavaScript is a versatile programming language used for web development, both frontend and backend. It's essential for creating interactive websites and applications.";
+      } else {
+        fallbackResponse += "Please try asking about programming, web development, databases, or other technical topics I can help you learn!";
       }
 
-      res.status(500).json({
-        success: false,
-        message: 'Sorry, I encountered an error. Please try again.',
-        response: 'I apologize, but I\'m having trouble processing your request right now. Please try again in a moment.'
+      res.json({
+        success: true,
+        response: fallbackResponse,
+        user: req.user ? req.user.getPublicInfo() : null,
+        note: "This is a fallback response. The AI service is temporarily unavailable."
       });
     }
   }
 
-  // Get AI suggestions based on user profile
-  static async getSuggestions(req, res) {
+  static async getChatHistory(req, res) {
     try {
-      const user = req.user;
-
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: 'Authentication required for personalized suggestions'
-        });
-      }
-
-      const prompt = `Based on this user's profile, suggest 5 personalized learning recommendations:
-      
-      User Profile:
-      - Name: ${user.name}
-      - Role: ${user.role}
-      - Current Skills: ${user.skills.join(', ') || 'None specified'}
-      - Courses Completed: ${user.courses_completed}
-      - Total Courses: ${user.total_courses}
-      - Average Score: ${user.average_score}%
-      
-      Provide 5 specific, actionable learning suggestions that would help them advance their career.
-      Format as a JSON array of objects with 'title', 'description', and 'category' fields.`;
-
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const aiMessage = response.text();
-
-      // Try to parse JSON response
-      let suggestions;
-      try {
-        suggestions = JSON.parse(aiMessage);
-      } catch (parseError) {
-        // If JSON parsing fails, return a formatted response
-        suggestions = [
-          {
-            title: "Continue Learning",
-            description: aiMessage,
-            category: "General"
-          }
-        ];
-      }
-
-      res.status(200).json({
+      // This would typically fetch from a database
+      // For now, return empty array as chat history isn't implemented yet
+      res.json({
         success: true,
-        suggestions,
-        user: user.getPublicInfo()
+        messages: [],
+        message: "Chat history feature coming soon!"
       });
-
     } catch (error) {
-      console.error('AI suggestions error:', error);
+      console.error('Get chat history error:', error);
       res.status(500).json({
         success: false,
-        message: 'Failed to generate suggestions'
+        message: 'Failed to retrieve chat history'
       });
     }
   }

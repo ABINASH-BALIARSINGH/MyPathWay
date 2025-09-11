@@ -30,7 +30,10 @@ const generalLimiter = rateLimit({
 router.post('/register', authLimiter, AuthController.register);
 router.post('/login', authLimiter, AuthController.login);
 router.post('/logout', generalLimiter, AuthController.logout);
-router.get('/verify-token', generalLimiter, authenticateToken, AuthController.verifyToken);
+
+// ✅ FIXED: Remove authenticateToken middleware from verify-token
+// This endpoint should verify tokens itself, not require authentication
+router.get('/verify-token', generalLimiter, AuthController.verifyToken);
 
 // Protected routes
 router.get('/profile', generalLimiter, authenticateToken, AuthController.getProfile);

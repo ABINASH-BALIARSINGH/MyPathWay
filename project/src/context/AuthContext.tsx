@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
@@ -24,7 +25,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  signup: (name: string, email: string, password: string, role?: string) => Promise<void>;
+  signup: (name: string, email: string, password: string) => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<void>;
   updateProgress: (progress: Partial<User['progress']>) => Promise<void>;
   loading: boolean;
@@ -48,33 +49,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const apiCall = async (endpoint: string, options: RequestInit = {}) => {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-      credentials: 'include', // ✅ important for cookies
-      ...options,
-    });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      const msg = data.message || data.errors?.join(', ') || 'Something went wrong';
-      throw new Error(msg);
-    }
-
-    return data;
-  };
+  // Axios instance with credentials
+  const api = axios.create({
+    baseURL: API_BASE_URL,
+    withCredentials: true, // ✅ crucial for cookies
+  });
 
   // Check existing session on app load
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const data = await apiCall('/auth/verify-token');
+        const { data } = await api.get('/auth/verify-token');
         if (data.success) setUser(data.user);
-        else setUser(null);
       } catch (err) {
         console.log('No valid session found:', err);
         setUser(null);
@@ -85,49 +71,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  // Login
   const login = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
-
     try {
-      const data = await apiCall('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-      });
+      const { data } = await api.post('/auth/login', { email, password });
       setUser(data.user);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Login failed');
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Signup
-  const signup = async (name: string, email: string, password: string, role = 'learner') => {
+  const signup = async (name: string, email: string, password: string) => {
     setLoading(true);
     setError(null);
-
     try {
-      const data = await apiCall('/auth/register', {
-        method: 'POST',
-        body: JSON.stringify({ name, email, password, role: 'learner', confirmPassword: password }),
-      });
+      const { data } = await api.post('/auth/register', { name, email, password, confirmPassword: password });
       setUser(data.user);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Signup failed');
       throw err;
     } finally {
       setLoading(false);
     }
   };
 
-  // Logout
   const logout = async () => {
     setLoading(true);
     try {
-      await apiCall('/auth/logout', { method: 'POST' });
+      await api.post('/auth/logout');
     } catch (err) {
       console.error('Logout error:', err);
     } finally {
@@ -136,48 +111,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  // Update profile
   const updateProfile = async (updates: Partial<User>) => {
     setError(null);
     try {
-      const data = await apiCall('/auth/profile', {
-        method: 'PUT',
-        body: JSON.stringify(updates),
-      });
+      const { data } = await api.put('/auth/profile', updates);
       if (data.success) setUser(data.user);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Profile update failed');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Profile update failed');
       throw err;
     }
   };
 
-  // Update progress
   const updateProgress = async (progress: Partial<User['progress']>) => {
     setError(null);
     try {
-      const data = await apiCall('/auth/progress', {
-        method: 'PUT',
-        body: JSON.stringify(progress),
-      });
+      const { data } = await api.put('/auth/progress', progress);
       if (data.success) setUser(data.user);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Progress update failed');
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Progress update failed');
       throw err;
     }
   };
 
   return (
     <AuthContext.Provider
-      value={{
-        user,
-        login,
-        logout,
-        signup,
-        updateProfile,
-        updateProgress,
-        loading,
-        error,
-      }}
+      value={{ user, login, logout, signup, updateProfile, updateProgress, loading, error }}
     >
       {children}
     </AuthContext.Provider>

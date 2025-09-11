@@ -1,132 +1,168 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, ExternalLink, Zap, Brain, MessageCircle } from 'lucide-react';
+import { Bot, X, Send, User, Loader } from 'lucide-react';
+import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
+
+interface Message {
+  sender: 'user' | 'ai';
+  text: string;
+}
 
 const AIAssistantButton: React.FC = () => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [showTooltip, setShowTooltip] = useState(false);
+  const { user } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
 
-  const handleClick = () => {
-    window.open('https://spiffy-semolina-dc9ddb.netlify.app/', '_blank', 'noopener,noreferrer');
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  useEffect(() => {
+    if (isOpen && messages.length === 0) {
+      setMessages([
+        {
+          sender: 'ai',
+          text: "Hello! I'm your MyPathWay AI Assistant. Ask me anything about learning, careers, or skills.",
+        },
+      ]);
+    }
+  }, [isOpen, messages.length]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const userMessage = inputValue.trim();
+    if (!userMessage) return;
+
+    setMessages(prev => [...prev, { sender: 'user', text: userMessage }]);
+    setInputValue('');
+    setIsLoading(true);
+
+    try {
+      const { data } = await axios.post(
+        '/api/chat/message',
+        { message: userMessage },
+        { withCredentials: true } // ✅ include cookies
+      );
+
+      setMessages(prev => [...prev, { sender: 'ai', text: data.response }]);
+    } catch (err) {
+      console.error('AI chat error:', err);
+      setMessages(prev => [
+        ...prev,
+        { sender: 'ai', text: "Sorry, I'm having trouble connecting. Please try again later." },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="relative">
-      <motion.button
-        onClick={handleClick}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          setShowTooltip(true);
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setShowTooltip(false);
-        }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group"
-      >
-        {/* Animated background */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-emerald-500"
-          animate={{
-            x: isHovered ? 0 : '-100%',
-          }}
-          transition={{ duration: 0.3 }}
-        />
-        
-        {/* Sparkle effects */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
-              animate={{
-                x: [0, 100, 0],
-                y: [0, -50, 0],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.3,
-              }}
-              style={{
-                left: `${20 + i * 15}%`,
-                top: `${30 + (i % 2) * 40}%`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 flex items-center space-x-2">
-          <motion.div
-            animate={{ rotate: isHovered ? 360 : 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Bot className="w-5 h-5" />
-          </motion.div>
-          <span>MyPathWay AI Assistant</span>
-          <motion.div
-            animate={{ x: isHovered ? 2 : 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <ExternalLink className="w-4 h-4" />
-          </motion.div>
-        </div>
-
-        {/* Pulse effect */}
-        <motion.div
-          className="absolute inset-0 bg-white/20 rounded-xl"
-          animate={{
-            scale: [1, 1.05, 1],
-            opacity: [0, 0.3, 0],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-          }}
-        />
-
-        {/* New launch badge */}
-        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-          NEW
-        </div>
-      </motion.button>
-
-      {/* Tooltip */}
+    <div className="fixed bottom-5 right-5 z-50">
       <AnimatePresence>
-        {showTooltip && (
+        {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            initial={{ opacity: 0, y: 50, scale: 0.5 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-900 dark:bg-gray-800 text-white text-sm rounded-lg p-3 shadow-xl z-50"
+            exit={{ opacity: 0, y: 50, scale: 0.5 }}
+            transition={{ duration: 0.3 }}
+            className="w-96 h-[600px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-gray-200 dark:border-gray-700"
           >
-            <div className="flex items-start space-x-2">
-              <Brain className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-semibold mb-1">Personal AI Learning Assistant</p>
-                <p className="text-gray-300 text-xs">Get personalized help, study plans, and instant answers to your learning questions.</p>
-                <div className="flex items-center space-x-3 mt-2">
-                  <div className="flex items-center space-x-1">
-                    <Zap className="w-3 h-3 text-yellow-400" />
-                    <span className="text-xs text-gray-300">Instant Help</span>
+            {/* Header */}
+            <div className="p-4 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <Bot className="text-blue-500" />
+                <h3 className="font-bold text-lg text-gray-800 dark:text-white">
+                  AI Learning Assistant
+                </h3>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="text-gray-500 hover:text-gray-800 dark:hover:text-white">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+              {messages.map((msg, idx) => (
+                <div key={idx} className={`flex items-start gap-3 ${msg.sender === 'user' ? 'justify-end' : ''}`}>
+                  {msg.sender === 'ai' && (
+                    <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+                      <Bot size={20} className="text-white" />
+                    </div>
+                  )}
+                  <div className={`max-w-xs px-4 py-2 rounded-2xl ${
+                    msg.sender === 'user'
+                      ? 'bg-blue-500 text-white rounded-br-none'
+                      : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-bl-none'
+                  }`}>
+                    <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <MessageCircle className="w-3 h-3 text-green-400" />
-                    <span className="text-xs text-gray-300">24/7 Available</span>
+                  {msg.sender === 'user' && (
+                    <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center flex-shrink-0">
+                      <User size={20} className="text-gray-600" />
+                    </div>
+                  )}
+                </div>
+              ))}
+              {isLoading && (
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center flex-shrink-0">
+                    <Bot size={20} className="text-white" />
+                  </div>
+                  <div className="max-w-xs px-4 py-2 rounded-2xl bg-gray-200 dark:bg-gray-700">
+                    <Loader className="animate-spin text-gray-500" size={20} />
                   </div>
                 </div>
-              </div>
+              )}
+              <div ref={chatEndRef} />
             </div>
-            
-            {/* Arrow */}
-            <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-800" />
+
+            {/* Input */}
+            <div className="p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+              <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={e => setInputValue(e.target.value)}
+                  placeholder="Ask me anything..."
+                  className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  disabled={isLoading}
+                />
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed"
+                  disabled={isLoading}
+                >
+                  <Send size={20} />
+                </button>
+              </form>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating button */}
+      <motion.button
+        onClick={() => setIsOpen(!isOpen)}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center shadow-xl"
+      >
+        <AnimatePresence mode="wait">
+          {isOpen ? (
+            <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+              <X size={30} />
+            </motion.div>
+          ) : (
+            <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+              <Bot size={30} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.button>
     </div>
   );
 };

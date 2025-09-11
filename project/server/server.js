@@ -1,41 +1,39 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const cookieParser = require('cookie-parser');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
 
-// Import database and routes
-const { initializeDatabase } = require('./config/database');
-const authRoutes = require('./routes/auth');
-const chatRoutes = require('./routes/chat');
+// Database & routes
+const { initializeDatabase } = require("./config/database");
+const authRoutes = require("./routes/auth");
+const chatRoutes = require("./routes/chat");
+const collegeRoutes = require('./routes/colleges');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware (Helmet)
+// Security middleware
 app.use(
   helmet({
-    contentSecurityPolicy: false, // disable CSP for dev to avoid blocking Vite scripts
+    contentSecurityPolicy: false, // Disable CSP for dev
   })
 );
 
-// CORS for Vite frontend + cookies
-const allowedOrigins = [
-  'http://localhost:5173', // Vite dev server
-  'http://localhost:3000',
-  'http://localhost:3001',
-];
+// CORS: allow frontend + cookies
+const allowedOrigins = ["http://localhost:5173", "http://localhost:3000"];
 app.use(
   cors({
     origin: allowedOrigins,
-    credentials: true, // Allow cookies
+    credentials: true, // ✅ allow cookies
   })
 );
 
-// Body parsing
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// Body parsing & cookies
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
+
 
 // Request logging
 app.use((req, res, next) => {
@@ -44,42 +42,39 @@ app.use((req, res, next) => {
 });
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({
-    status: 'Server is running',
+    status: "Server is running",
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
+    environment: process.env.NODE_ENV || "development",
   });
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/chat', chatRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/chat", chatRoutes);
+app.use('/api/colleges', collegeRoutes);
 
 // 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ success: false, message: 'API endpoint not found' });
+app.use("*", (req, res) => {
+  res.status(404).json({ success: false, message: "API endpoint not found" });
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
+  console.error("Unhandled error:", err);
   const message =
-    process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message;
+    process.env.NODE_ENV === "production" ? "Internal server error" : err.message;
   res.status(err.status || 500).json({
     success: false,
     message,
-    ...(process.env.NODE_ENV !== 'production' && { stack: err.stack }),
+    ...(process.env.NODE_ENV !== "production" && { stack: err.stack }),
   });
 });
 
 // Graceful shutdown
-const gracefulShutdown = () => {
-  console.log('Shutting down gracefully...');
-  process.exit(0);
-};
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on("SIGTERM", () => process.exit(0));
+process.on("SIGINT", () => process.exit(0));
 
 // Start server
 const startServer = async () => {
@@ -90,7 +85,7 @@ const startServer = async () => {
       console.log(`🔗 API URL: http://localhost:${PORT}/api`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 };

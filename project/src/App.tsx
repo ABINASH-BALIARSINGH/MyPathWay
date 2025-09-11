@@ -28,6 +28,7 @@ import Quiz from './pages/Quiz';
 import Colleges from './pages/Colleges';
 import Scholarships from './pages/Scholarships';
 import Timeline from './pages/Timeline';
+import CareerSearch from './pages/CareerSearch';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
               <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="quiz" element={<ProtectedRoute><Quiz /></ProtectedRoute>} />
               <Route path="courses" element={<ProtectedRoute><Courses /></ProtectedRoute>} />
+              <Route path="career-search" element={<ProtectedRoute><CareerSearch /></ProtectedRoute>} />
               <Route path="colleges" element={<ProtectedRoute><Colleges /></ProtectedRoute>} />
               <Route path="scholarships" element={<ProtectedRoute><Scholarships /></ProtectedRoute>} />
               <Route path="timeline" element={<ProtectedRoute><Timeline /></ProtectedRoute>} />
