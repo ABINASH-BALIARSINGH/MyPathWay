@@ -14,15 +14,20 @@ import {
   RotateCcw
 } from 'lucide-react';
 
-const QuizInterface = ({ quizId, onExit }) => {
-  const [quiz, setQuiz] = useState(null);
+interface QuizInterfaceProps {
+  quizId: string;
+  onExit: () => void;
+}
+
+const QuizInterface: React.FC<QuizInterfaceProps> = ({ quizId, onExit }) => {
+  const [quiz, setQuiz] = useState<any>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState<Record<string, string>>({});
   const [timeRemaining, setTimeRemaining] = useState(0);
-  const [flaggedQuestions, setFlaggedQuestions] = useState(new Set());
+  const [flaggedQuestions, setFlaggedQuestions] = useState<Set<string>>(new Set());
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [results, setResults] = useState(null);
+  const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   // Mock quiz data - replace with API call
@@ -131,24 +136,24 @@ const QuizInterface = ({ quizId, onExit }) => {
     }
   }, [timeRemaining, results]);
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const handleAnswerSelect = (questionId, answer) => {
+  const handleAnswerSelect = (questionId: string, answer: string) => {
     setAnswers(prev => ({
       ...prev,
       [questionId]: answer
     }));
   };
 
-  const handleQuestionNavigation = (index) => {
+  const handleQuestionNavigation = (index: number) => {
     setCurrentQuestion(index);
   };
 
-  const toggleFlag = (questionId) => {
+  const toggleFlag = (questionId: string) => {
     setFlaggedQuestions(prev => {
       const newSet = new Set(prev);
       if (newSet.has(questionId)) {
@@ -168,7 +173,7 @@ const QuizInterface = ({ quizId, onExit }) => {
     let totalMarks = 0;
     let earnedMarks = 0;
     
-    quiz.questions.forEach(question => {
+    quiz.questions.forEach((question: any) => {
       totalMarks += question.marks;
       const userAnswer = answers[question.id];
       if (userAnswer === question.correct_answer) {
@@ -199,7 +204,7 @@ const QuizInterface = ({ quizId, onExit }) => {
     }, 2000);
   };
 
-  const getGrade = (percentage) => {
+  const getGrade = (percentage: number) => {
     if (percentage >= 90) return 'A+';
     if (percentage >= 80) return 'A';
     if (percentage >= 70) return 'B+';
@@ -209,8 +214,8 @@ const QuizInterface = ({ quizId, onExit }) => {
     return 'F';
   };
 
-  const getGradeColor = (grade) => {
-    const colors = {
+  const getGradeColor = (grade: string) => {
+    const colors: Record<string, string> = {
       'A+': 'text-green-600 dark:text-green-400',
       'A': 'text-green-600 dark:text-green-400',
       'B+': 'text-blue-600 dark:text-blue-400',
@@ -458,7 +463,7 @@ const QuizInterface = ({ quizId, onExit }) => {
               
               {/* Answer Options */}
               <div className="space-y-3 mb-8">
-                {currentQ.options.map((option, index) => {
+                {currentQ.options.map((option: string, index: number) => {
                   const optionLetter = String.fromCharCode(65 + index); // A, B, C, D
                   const isSelected = answers[currentQ.id] === option;
                   
@@ -526,16 +531,16 @@ const QuizInterface = ({ quizId, onExit }) => {
               </h3>
               
               <div className="grid grid-cols-5 lg:grid-cols-4 gap-2 mb-6">
-                {quiz.questions.map((_, index) => {
-                  const isAnswered = answers[quiz.questions[index].id];
-                  const isFlagged = flaggedQuestions.has(quiz.questions[index].id);
+                {quiz.questions.map((question: any, index: number) => {
+                  const isAnswered = answers[question.id];
+                  const isFlagged = flaggedQuestions.has(question.id);
                   const isCurrent = index === currentQuestion;
                   
                   return (
                     <button
                       key={index}
                       onClick={() => handleQuestionNavigation(index)}
-                      className={`w-10 h-10 rounded-lg text-sm font-semibold border-2 transition-all ${
+                      className={`w-10 h-10 rounded-lg text-sm font-semibold border-2 transition-all relative ${
                         isCurrent
                           ? 'border-blue-500 bg-blue-500 text-white shadow-lg'
                           : isAnswered

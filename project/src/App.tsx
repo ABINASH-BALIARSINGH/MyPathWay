@@ -22,6 +22,7 @@ import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Careers from './pages/Careers';
 import Profile from './pages/Profile';
+import CareerPage from './pages/CareerPage';
 
 // Add these missing imports for the new pages
 import Quiz from './pages/Quiz';
@@ -59,6 +60,8 @@ function App() {
               <Route path="news" element={<ProtectedRoute><News /></ProtectedRoute>} />
               <Route path="apply" element={<ProtectedRoute><Apply /></ProtectedRoute>} />
               <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+              
+
 
               {/* Public Routes */}
               <Route path="about" element={<About />} />
@@ -66,6 +69,8 @@ function App() {
               <Route path="faq" element={<FAQ />} />
               <Route path="careers" element={<Careers />} />
               <Route path="/quiz/:quizId/take" element={<QuizInterface />} />
+              <Route path="/career-companion" element={<CareerPage />} />
+
             </Route>
           </Routes>
         </Router>
