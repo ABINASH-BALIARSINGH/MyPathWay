@@ -26,6 +26,12 @@ import {
   MapPin,
   Star,
   PenTool,
+  HelpCircle,
+  Clock,
+  TrendingUp,
+  UserCheck,
+  Lightbulb,
+  Target,
 } from 'lucide-react'
 
 // --- Data for the Career Flowchart ---
@@ -35,11 +41,13 @@ const after10thFlow = {
     {
       text: 'Science',
       icon: 'FlaskConical',
+      description: 'Explore fields in engineering, medicine, research and technology',
       next: {
         question: 'Science is vast! Which combination?',
         options: [
           {
             text: 'PCM',
+            description: 'Physics, Chemistry, Mathematics - for engineering and technical fields',
             next: {
               question: 'With PCM, you can aim for:',
               options: [
@@ -52,6 +60,9 @@ const after10thFlow = {
                     path: ['10th', 'Science (PCM)', 'B.Tech / B.E.'],
                     exams: ['JEE Main', 'JEE Advanced', 'BITSAT'],
                     careers: ['Software Developer', 'Architect', 'Researcher'],
+                    duration: '4 years for B.Tech',
+                    avgSalary: '₹6-15 LPA for freshers',
+                    growth: 'High demand with 15% projected growth',
                   },
                 },
                 {
@@ -67,6 +78,9 @@ const after10thFlow = {
                       'Urban Planner',
                       'Interior Designer',
                     ],
+                    duration: '5 years for B.Arch',
+                    avgSalary: '₹4-10 LPA for freshers',
+                    growth: 'Steady growth in construction and design sectors',
                   },
                 },
                 {
@@ -82,6 +96,9 @@ const after10thFlow = {
                       'Navy Officer',
                       'Air Force Pilot',
                     ],
+                    duration: '3-4 years training',
+                    avgSalary: '₹8-12 LPA starting',
+                    growth: 'Stable career with excellent benefits',
                   },
                 },
                 {
@@ -97,6 +114,9 @@ const after10thFlow = {
                       'Data Scientist',
                       'Cybersecurity Analyst',
                     ],
+                    duration: '3-4 years for degree',
+                    avgSalary: '₹5-20 LPA based on skills',
+                    growth: 'Extremely high demand with global opportunities',
                   },
                 },
               ],
@@ -104,6 +124,7 @@ const after10thFlow = {
           },
           {
             text: 'PCB',
+            description: 'Physics, Chemistry, Biology - for medical and life sciences',
             next: {
               question: 'With PCB, the medical field awaits:',
               options: [
@@ -120,6 +141,9 @@ const after10thFlow = {
                       'Dentist (BDS)',
                       'Ayurvedic Doctor (BAMS)',
                     ],
+                    duration: '5.5 years for MBBS',
+                    avgSalary: '₹8-15 LPA for junior doctors',
+                    growth: 'Always in demand with high respect',
                   },
                 },
                 {
@@ -135,6 +159,9 @@ const after10thFlow = {
                       'Researcher',
                       'Drug Inspector',
                     ],
+                    duration: '4 years for B.Pharm',
+                    avgSalary: '₹3-6 LPA for freshers',
+                    growth: 'Stable career in healthcare sector',
                   },
                 },
               ],
@@ -142,6 +169,7 @@ const after10thFlow = {
           },
           {
             text: 'PCMB',
+            description: 'Physics, Chemistry, Mathematics, Biology - keeping all options open',
             next: {
               question: 'With PCMB, you have diverse options:',
               options: [
@@ -154,6 +182,9 @@ const after10thFlow = {
                     path: ['10th', 'Science (PCMB)', 'B.Sc -> M.Sc -> PhD'],
                     exams: ['University Entrances'],
                     careers: ['Scientist', 'Researcher', 'Professor'],
+                    duration: '3-7 years for higher education',
+                    avgSalary: '₹6-12 LPA for researchers',
+                    growth: 'Specialized field with academic opportunities',
                   },
                 },
                 {
@@ -169,6 +200,9 @@ const after10thFlow = {
                       'Research Scientist',
                       'Genetic Engineer',
                     ],
+                    duration: '4 years for B.Tech',
+                    avgSalary: '₹4-8 LPA for freshers',
+                    growth: 'Emerging field with high potential',
                   },
                 },
               ],
@@ -180,6 +214,7 @@ const after10thFlow = {
     {
       text: 'Commerce',
       icon: 'Briefcase',
+      description: 'Explore business, finance, accounting and economics',
       next: {
         question: 'Commerce opens doors to the business world:',
         options: [
@@ -192,6 +227,9 @@ const after10thFlow = {
               path: ['10th', 'Commerce', 'BBA / BCom'],
               exams: ['University Entrances'],
               careers: ['Business Analyst', 'Manager', 'Entrepreneur'],
+              duration: '3 years for BBA/BCom',
+              avgSalary: '₹3-7 LPA for freshers',
+              growth: 'Versatile career with corporate opportunities',
             },
           },
           {
@@ -207,6 +245,9 @@ const after10thFlow = {
                 'Financial Analyst',
                 'Banker',
               ],
+              duration: '3-5 years for professional courses',
+              avgSalary: '₹6-15 LPA for qualified professionals',
+              growth: 'High demand in financial sector',
             },
           },
           {
@@ -218,6 +259,9 @@ const after10thFlow = {
               path: ['10th', 'Commerce', 'B.A. Economics'],
               exams: ['University Entrances'],
               careers: ['Economist', 'Data Analyst', 'Policy Advisor'],
+              duration: '3 years for BA Economics',
+              avgSalary: '₹4-9 LPA for freshers',
+              growth: 'Analytical roles in various sectors',
             },
           },
         ],
@@ -226,6 +270,7 @@ const after10thFlow = {
     {
       text: 'Arts / Humanities',
       icon: 'Palette',
+      description: 'Explore creative fields, law, civil services and social sciences',
       next: {
         question:
           'Arts & Humanities nurture creativity and critical thinking:',
@@ -239,6 +284,9 @@ const after10thFlow = {
               path: ['10th', 'Arts/Humanities', 'BA LLB / LLB'],
               exams: ['CLAT', 'LSAT India'],
               careers: ['Lawyer', 'Corporate Counsel', 'Judge'],
+              duration: '5 years for integrated BA LLB',
+              avgSalary: '₹5-12 LPA for fresh lawyers',
+              growth: 'Respected profession with diverse opportunities',
             },
           },
           {
@@ -250,6 +298,9 @@ const after10thFlow = {
               path: ['10th', 'Any Stream', 'Graduation', 'UPSC CSE'],
               exams: ['UPSC Civil Services Exam'],
               careers: ['IAS', 'IPS', 'IFS', 'IRS'],
+              duration: 'Graduation + 1-3 years preparation',
+              avgSalary: '₹8-15 LPA starting (plus benefits)',
+              growth: 'Prestigious career with societal impact',
             },
           },
           {
@@ -261,6 +312,9 @@ const after10thFlow = {
               path: ['10th', 'Arts/Humanities', 'Design Degree'],
               exams: ['NID', 'NIFT', 'UCEED'],
               careers: ['Fashion Designer', 'Graphic Designer', 'Animator'],
+              duration: '4 years for design degrees',
+              avgSalary: '₹3-8 LPA for freshers',
+              growth: 'Creative industry with freelance opportunities',
             },
           },
           {
@@ -272,6 +326,9 @@ const after10thFlow = {
               path: ['10th', 'Arts/Humanities', 'BA in Journalism'],
               exams: ['University Entrances'],
               careers: ['Journalist', 'Content Creator', 'Reporter'],
+              duration: '3 years for BA Journalism',
+              avgSalary: '₹3-6 LPA for freshers',
+              growth: 'Media industry with digital expansion',
             },
           },
           {
@@ -283,6 +340,9 @@ const after10thFlow = {
               path: ['10th', 'Arts/Humanities', 'BA/MA'],
               exams: ['University Entrances'],
               careers: ['Counselor', 'Social Worker', 'NGO Professional'],
+              duration: '3-5 years for degree',
+              avgSalary: '₹3-6 LPA for freshers',
+              growth: 'Rewarding career helping others',
             },
           },
         ],
@@ -291,6 +351,7 @@ const after10thFlow = {
     {
       text: 'Vocational',
       icon: 'Wrench',
+      description: 'Skill-based training for immediate employment opportunities',
       next: {
         question: 'Vocational courses offer skill-based training:',
         options: [
@@ -302,6 +363,9 @@ const after10thFlow = {
               path: ['10th', 'Vocational', 'ITI/Diploma'],
               exams: [],
               careers: ['Electrician', 'Mechanic', 'Technician'],
+              duration: '1-3 years for certification',
+              avgSalary: '₹2-5 LPA for skilled technicians',
+              growth: 'Always in demand with hands-on work',
             },
           },
           {
@@ -312,6 +376,9 @@ const after10thFlow = {
               path: ['10th', 'Vocational', 'Diploma'],
               exams: [],
               careers: ['Lab Technician', 'Radiographer', 'Physiotherapist'],
+              duration: '2-3 years for diploma',
+              avgSalary: '₹3-5 LPA for paramedical staff',
+              growth: 'Essential healthcare support roles',
             },
           },
           {
@@ -322,6 +389,9 @@ const after10thFlow = {
               path: ['10th', 'Vocational', 'Diploma'],
               exams: [],
               careers: ['Hotel Manager', 'Chef', 'Event Manager'],
+              duration: '1-3 years for certification',
+              avgSalary: '₹3-6 LPA in hospitality sector',
+              growth: 'Growing tourism industry opportunities',
             },
           },
         ],
@@ -336,6 +406,7 @@ const after12thFlow = {
     {
       text: 'Science (PCM)',
       icon: 'FlaskConical',
+      description: 'Physics, Chemistry, Mathematics background',
       next: {
         question: 'With a background in PCM, you can pursue:',
         options: [
@@ -352,6 +423,9 @@ const after12thFlow = {
                 'Mechanical Engineer',
                 'Civil Engineer',
               ],
+              duration: '4 years for B.Tech',
+              avgSalary: '₹6-15 LPA for freshers',
+              growth: 'High demand with specialization options',
             },
           },
           {
@@ -363,6 +437,9 @@ const after12thFlow = {
               path: ['12th (PCM)', 'B.Arch'],
               exams: ['NATA', 'JEE Main (Paper 2)'],
               careers: ['Architect', 'Urban Planner', 'Landscape Architect'],
+              duration: '5 years for B.Arch',
+              avgSalary: '₹4-10 LPA for freshers',
+              growth: 'Creative and technical field with project-based work',
             },
           },
           {
@@ -374,6 +451,9 @@ const after12thFlow = {
               path: ['12th (PCM)', 'B.Sc (Physics, Chem, Maths)'],
               exams: ['University Entrances', 'IISER Aptitude Test'],
               careers: ['Researcher', 'Data Analyst', 'Teacher/Professor'],
+              duration: '3 years for B.Sc',
+              avgSalary: '₹3-6 LPA for freshers',
+              growth: 'Foundation for higher studies and research',
             },
           },
         ],
@@ -382,6 +462,7 @@ const after12thFlow = {
     {
       text: 'Science (PCB)',
       icon: 'HeartPulse',
+      description: 'Physics, Chemistry, Biology background',
       next: {
         question: 'With a background in PCB, you can pursue:',
         options: [
@@ -398,6 +479,9 @@ const after12thFlow = {
                 'Dentist',
                 'Ayurvedic Doctor',
               ],
+              duration: '5.5 years for MBBS',
+              avgSalary: '₹8-15 LPA for junior doctors',
+              growth: 'Prestigious and always in-demand profession',
             },
           },
           {
@@ -409,6 +493,9 @@ const after12thFlow = {
               path: ['12th (PCB)', 'B.Pharm'],
               exams: ['NEET', 'State CETs'],
               careers: ['Pharmacist', 'Drug Inspector', 'Medical Researcher'],
+              duration: '4 years for B.Pharm',
+              avgSalary: '₹3-6 LPA for freshers',
+              growth: 'Healthcare sector with retail and hospital opportunities',
             },
           },
           {
@@ -420,6 +507,9 @@ const after12thFlow = {
               path: ['12th (PCB)', 'B.Sc Nursing'],
               exams: ['AIIMS Nursing', 'State Entrances'],
               careers: ['Registered Nurse', 'Nurse Practitioner', 'Educator'],
+              duration: '4 years for B.Sc Nursing',
+              avgSalary: '₹3-5 LPA for staff nurses',
+              growth: 'Critical healthcare role with global opportunities',
             },
           },
         ],
@@ -428,6 +518,7 @@ const after12thFlow = {
     {
       text: 'Commerce',
       icon: 'Briefcase',
+      description: 'Commerce and business studies background',
       next: {
         question: 'With a background in Commerce, you can pursue:',
         options: [
@@ -440,6 +531,9 @@ const after12thFlow = {
               path: ['12th (Commerce)', 'B.Com / BBA'],
               exams: ['University Entrances (e.g., DU JAT, NPAT)'],
               careers: ['Accountant', 'Business Manager', 'Marketing Analyst'],
+              duration: '3 years for B.Com/BBA',
+              avgSalary: '₹3-7 LPA for freshers',
+              growth: 'Versatile business education for corporate roles',
             },
           },
           {
@@ -455,6 +549,9 @@ const after12thFlow = {
                 'Company Secretary',
                 'Cost Accountant',
               ],
+              duration: '3-5 years for certification',
+              avgSalary: '₹6-15 LPA for qualified professionals',
+              growth: 'Highly respected professions with excellent earning potential',
             },
           },
         ],
@@ -463,6 +560,7 @@ const after12thFlow = {
     {
       text: 'Arts / Humanities',
       icon: 'Palette',
+      description: 'Arts, humanities and social sciences background',
       next: {
         question: 'With a background in Arts, you can pursue:',
         options: [
@@ -475,6 +573,9 @@ const after12thFlow = {
               path: ['12th (Arts)', 'BA LLB (5-Year Integrated)'],
               exams: ['CLAT', 'AILET', 'LSAT India'],
               careers: ['Lawyer', 'Judge', 'Corporate Counsel'],
+              duration: '5 years for integrated BA LLB',
+              avgSalary: '₹5-12 LPA for fresh lawyers',
+              growth: 'Diverse practice areas from litigation to corporate law',
             },
           },
           {
@@ -486,6 +587,9 @@ const after12thFlow = {
               path: ['12th (Arts)', 'BA Journalism / B.Des'],
               exams: ['NID DAT', 'NIFT Entrance', 'University Entrances'],
               careers: ['Journalist', 'Graphic Designer', 'UI/UX Designer'],
+              duration: '3-4 years for degree',
+              avgSalary: '₹3-8 LPA for freshers',
+              growth: 'Expanding digital media and design opportunities',
             },
           },
           {
@@ -497,6 +601,9 @@ const after12thFlow = {
               path: ['12th (Any Stream)', 'Graduation', 'UPSC CSE'],
               exams: ['UPSC Civil Services Exam'],
               careers: ['IAS Officer', 'IPS Officer', 'IFS Officer'],
+              duration: 'Graduation + 1-3 years preparation',
+              avgSalary: '₹8-15 LPA starting (plus benefits)',
+              growth: 'Most prestigious administrative roles in India',
             },
           },
         ],
@@ -517,6 +624,9 @@ const proJobFlow = {
         path: ['10th', 'Science (PCM)', 'B.Tech / B.E.', 'Specialization'],
         exams: ['JEE Main & Advanced', 'BITSAT', 'State CETs'],
         careers: ['Software', 'Civil', 'Mechanical', 'Electrical Engineer'],
+        duration: '4 years degree + specialization',
+        avgSalary: '₹6-15 LPA for freshers',
+        growth: 'Continuous learning with emerging technologies',
       },
     },
     {
@@ -528,6 +638,9 @@ const proJobFlow = {
         path: ['10th', 'Science (PCB)', 'MBBS', 'MD/MS Specialization'],
         exams: ['NEET UG', 'NEET PG'],
         careers: ['General Physician', 'Surgeon', 'Specialist Doctor'],
+        duration: '5.5 years MBBS + 3 years specialization',
+        avgSalary: '₹8-15 LPA for junior doctors, higher for specialists',
+        growth: 'Lifelong learning profession with high respect',
       },
     },
     {
@@ -539,6 +652,9 @@ const proJobFlow = {
         path: ['10th', 'Science (PCM)', 'B.Arch', 'Internship'],
         exams: ['NATA', 'JEE Main (Paper 2)'],
         careers: ['Corporate Architect', 'Urban Planner', 'Freelance Designer'],
+        duration: '5 years B.Arch + 1-2 years internship',
+        avgSalary: '₹4-10 LPA for freshers',
+        growth: 'Creative field with sustainable design focus',
       },
     },
     {
@@ -550,6 +666,9 @@ const proJobFlow = {
         path: ['12th (Any Stream)', 'BA LLB / LLB', 'Bar Exam'],
         exams: ['CLAT', 'AILET', 'LSAT India'],
         careers: ['Corporate Lawyer', 'Litigator', 'Judge'],
+        duration: '5 years integrated or 3 years LLB after graduation',
+        avgSalary: '₹5-12 LPA for fresh lawyers',
+        growth: 'Diverse practice areas with court and corporate options',
       },
     },
     {
@@ -561,6 +680,9 @@ const proJobFlow = {
         path: ['12th (Any Stream)', 'B.Des / M.Des', 'Portfolio'],
         exams: ['NID DAT', 'UCEED', 'NIFT Entrance'],
         careers: ['Graphic Designer', 'UI/UX Designer', 'Fashion Designer'],
+        duration: '4 years B.Des + portfolio development',
+        avgSalary: '₹3-8 LPA for freshers',
+        growth: 'Expanding digital design opportunities globally',
       },
     },
     {
@@ -572,6 +694,9 @@ const proJobFlow = {
         path: ['12th (Any Stream)', 'Graduation', 'UPSC Preparation'],
         exams: ['UPSC Civil Services Exam (CSE)'],
         careers: ['IAS', 'IPS', 'IFS', 'IRS Officer'],
+        duration: 'Graduation + 1-3 years dedicated preparation',
+        avgSalary: '₹8-15 LPA starting (plus housing, transport benefits)',
+        growth: 'Highest administrative roles with societal impact',
       },
     },
   ],
@@ -583,17 +708,29 @@ const careerData = {
     {
       text: 'Pro Class (Plan Studies)',
       icon: 'BookOpen',
+      description: 'I want to plan my educational path based on my current academic level',
       next: {
         question: 'Which academic stage are you at?',
         options: [
-          { text: 'After 10th', icon: 'GraduationCap', next: after10thFlow },
-          { text: 'After 12th', icon: 'GraduationCap', next: after12thFlow },
+          { 
+            text: 'After 10th', 
+            icon: 'GraduationCap', 
+            description: 'Planning for senior secondary education',
+            next: after10thFlow 
+          },
+          { 
+            text: 'After 12th', 
+            icon: 'GraduationCap', 
+            description: 'Planning for graduation and beyond',
+            next: after12thFlow 
+          },
         ],
       },
     },
     {
       text: 'Pro Job (Choose Role)',
       icon: 'Briefcase',
+      description: 'I know which career I want and need the roadmap to get there',
       next: proJobFlow,
     },
   ],
@@ -626,6 +763,12 @@ const icons = {
   MapPin,
   Star,
   PenTool,
+  HelpCircle,
+  Clock,
+  TrendingUp,
+  UserCheck,
+  Lightbulb,
+  Target,
 }
 
 const OptionButton = ({ option, onSelect }) => {
@@ -633,22 +776,29 @@ const OptionButton = ({ option, onSelect }) => {
   return (
     <motion.button
       onClick={() => onSelect(option)}
-      className="w-full bg-white dark:bg-gray-700/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 text-left flex items-center space-x-5 border border-gray-100 dark:border-gray-700"
+      className="w-full bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-left flex items-start space-x-5 border border-gray-100 dark:border-gray-700 group"
       variants={{
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 },
       }}
-      whileHover={{ scale: 1.03 }}
+      whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
     >
       {Icon && (
-        <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 text-white rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
           <Icon className="w-6 h-6" />
         </div>
       )}
-      <span className="text-lg font-semibold text-gray-800 dark:text-white">
-        {option.text}
-      </span>
+      <div className="flex-1">
+        <span className="text-lg font-semibold text-gray-800 dark:text-white block mb-2">
+          {option.text}
+        </span>
+        {option.description && (
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            {option.description}
+          </p>
+        )}
+      </div>
     </motion.button>
   )
 }
@@ -659,53 +809,134 @@ const ResultCard = ({ result, onReset }) => {
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, type: 'spring' }}
-      className="bg-gradient-to-br from-blue-600 to-purple-600 text-white p-8 rounded-3xl shadow-2xl text-center w-full max-w-2xl"
+      className="bg-gradient-to-br from-blue-600 to-purple-600 text-white p-8 rounded-3xl shadow-2xl w-full max-w-3xl"
     >
-      <div className="flex justify-center items-center mb-4">
-        <Star className="w-8 h-8 text-yellow-300 mr-2" />
-        <h2 className="text-3xl font-bold">{result.details.title}</h2>
+      <div className="flex justify-center items-center mb-6">
+        <Target className="w-8 h-8 text-yellow-300 mr-3" />
+        <h2 className="text-3xl font-bold text-center">{result.details.title}</h2>
       </div>
 
-      <div className="bg-white/10 rounded-xl p-4 my-6">
-        <h3 className="font-semibold mb-2 text-blue-200">Recommended Path</h3>
-        <p className="text-lg font-medium">{result.details.path.join(' → ')}</p>
+      <div className="bg-white/10 rounded-xl p-5 my-6">
+        <h3 className="font-semibold mb-3 text-blue-200 flex items-center">
+          <MapPin className="w-5 h-5 mr-2" />
+          Recommended Path
+        </h3>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {result.details.path.map((step, index) => (
+            <React.Fragment key={index}>
+              <span className="bg-white/20 px-3 py-1.5 rounded-lg font-medium">{step}</span>
+              {index < result.details.path.length - 1 && (
+                <span className="text-blue-200">→</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-        <div className="bg-white/10 p-4 rounded-xl">
-          <h4 className="font-bold text-blue-200 flex items-center mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left mb-6">
+        <div className="bg-white/10 p-5 rounded-xl">
+          <h4 className="font-bold text-blue-200 flex items-center mb-3">
             <CheckCircle className="w-5 h-5 mr-2" />
             Key Exams
           </h4>
-          <ul className="list-inside space-y-1">
+          <ul className="space-y-2">
             {result.details.exams.length > 0 ? (
-              result.details.exams.map((exam) => <li key={exam}>{exam}</li>)
+              result.details.exams.map((exam) => (
+                <li key={exam} className="flex items-start">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                  <span>{exam}</span>
+                </li>
+              ))
             ) : (
-              <li>N/A</li>
+              <li>No specific entrance exams required</li>
             )}
           </ul>
         </div>
-        <div className="bg-white/10 p-4 rounded-xl">
-          <h4 className="font-bold text-blue-200 flex items-center mb-2">
-            <MapPin className="w-5 h-5 mr-2" />
+        <div className="bg-white/10 p-5 rounded-xl">
+          <h4 className="font-bold text-blue-200 flex items-center mb-3">
+            <UserCheck className="w-5 h-5 mr-2" />
             Career Opportunities
           </h4>
-          <ul className="list-inside space-y-1">
+          <ul className="space-y-2">
             {result.details.careers.map((career) => (
-              <li key={career}>{career}</li>
+              <li key={career} className="flex items-start">
+                <span className="w-1.5 h-1.5 bg-white rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                <span>{career}</span>
+              </li>
             ))}
           </ul>
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
+        <div className="bg-white/10 p-5 rounded-xl">
+          <h4 className="font-bold text-blue-200 flex items-center mb-3">
+            <Clock className="w-5 h-5 mr-2" />
+            Duration
+          </h4>
+          <p>{result.details.duration}</p>
+        </div>
+        <div className="bg-white/10 p-5 rounded-xl">
+          <h4 className="font-bold text-blue-200 flex items-center mb-3">
+            <TrendingUp className="w-5 h-5 mr-2" />
+            Average Starting Salary
+          </h4>
+          <p>{result.details.avgSalary}</p>
+          <p className="text-sm text-blue-200 mt-1">{result.details.growth}</p>
+        </div>
+      </div>
+
+      <div className="bg-white/10 p-5 rounded-xl mt-6">
+        <h4 className="font-bold text-blue-200 flex items-center mb-3">
+          <Lightbulb className="w-5 h-5 mr-2" />
+          Pro Tip
+        </h4>
+        <p className="text-sm">
+          {result.details.title.includes('Engineer') && 
+            "Focus on building practical projects alongside your degree to stand out to employers."}
+          {result.details.title.includes('Doctor') && 
+            "Develop strong communication skills and empathy alongside medical knowledge for patient care."}
+          {result.details.title.includes('Architect') && 
+            "Build a strong portfolio of designs and learn modern software tools alongside your degree."}
+          {result.details.title.includes('Lawyer') && 
+            "Participate in moot courts and legal aid clinics during your studies to gain practical experience."}
+          {result.details.title.includes('Designer') && 
+            "Create a diverse portfolio showcasing your best work and personal style to attract clients."}
+          {result.details.title.includes('Civil Servant') && 
+            "Stay updated on current affairs and develop a holistic understanding of governance issues."}
+          {!result.details.title.includes('Engineer') && 
+           !result.details.title.includes('Doctor') && 
+           !result.details.title.includes('Architect') && 
+           !result.details.title.includes('Lawyer') && 
+           !result.details.title.includes('Designer') && 
+           !result.details.title.includes('Civil Servant') && 
+           "Gain practical experience through internships and build a professional network in your chosen field."}
+        </p>
+      </div>
+
       <button
         onClick={onReset}
-        className="mt-8 bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center group w-full sm:w-auto mx-auto"
+        className="mt-8 bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center group w-full sm:w-auto mx-auto shadow-lg"
       >
         <RefreshCw className="mr-2 w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-        Start Over
+        Explore Another Path
       </button>
     </motion.div>
+  )
+}
+
+const ProgressIndicator = ({ currentIndex, total }) => {
+  const progress = (currentIndex / total) * 100
+  
+  return (
+    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-6">
+      <motion.div 
+        className="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full"
+        initial={{ width: 0 }}
+        animate={{ width: `${progress}%` }}
+        transition={{ duration: 0.5 }}
+      />
+    </div>
   )
 }
 
@@ -736,92 +967,99 @@ export default function CareerSearch() {
   const breadcrumbs = path
     .slice(1)
     .map((p) => {
-        // Find the text of the choice that led to this node `p`
+        // Find the text of the choice that led to this node p
         const prevNode = path[path.indexOf(p) - 1];
         const choice = prevNode.options.find(opt => opt.next === p || opt === p);
         return choice ? choice.text : '';
     })
     .filter(Boolean); // Filter out any empty strings
 
-
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <section className="py-20 bg-gradient-to-b from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300 min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Find Your Career Path
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Answer a few questions to discover a personalized career roadmap.
-          </p>
+          <motion.h2 
+            className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Discover Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Career Path</span>
+          </motion.h2><motion.p 
+            className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+          >
+            Navigate through your educational journey and explore various career opportunities tailored to your interests
+          </motion.p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800/50 rounded-3xl shadow-xl p-6 sm:p-10 min-h-[400px] flex flex-col items-center justify-center transition-all duration-500">
-          <AnimatePresence mode="wait">
-            {!isLeaf ? (
-              <motion.div
-                key={path.length}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.3 }}
-                className="w-full"
+        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8 mb-8 transition-colors duration-300">
+          {/* Breadcrumbs */}
+          {breadcrumbs.length > 0 && (
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-6 flex-wrap">
+              <button 
+                onClick={handleBack}
+                className="flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 mr-2"
               >
-                <div className="flex items-center justify-between mb-8">
-                  {path.length > 1 ? (
-                    <button
-                      onClick={handleBack}
-                      className="flex items-center text-sm font-semibold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors"
-                    >
-                      <ArrowLeft className="w-4 h-4 mr-2" /> Back
-                    </button>
-                  ) : (
-                    <div></div>
-                  )}
-                  <button
-                    onClick={handleReset}
-                    className="flex items-center text-sm font-semibold text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-white transition-colors"
-                  >
-                    <RefreshCw className="w-4 h-4 mr-2" /> Reset
-                  </button>
-                </div>
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                Back
+              </button>
+              <span className="mr-2">|</span>
+              {breadcrumbs.map((crumb, index) => (
+                <span key={index} className="flex items-center">
+                  {index > 0 && <span className="mx-2">›</span>}
+                  <span className="truncate max-w-xs">{crumb}</span>
+                </span>
+              ))}
+            </div>
+          )}
 
-                <div className="h-10 text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium">
-                  {breadcrumbs.join(' > ')}
-                </div>
+          {/* Progress Indicator */}
+          <ProgressIndicator currentIndex={path.length} total={6} />
 
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-8">
+          <AnimatePresence mode="wait">
+            {isLeaf ? (
+              <ResultCard result={currentNode} onReset={handleReset} />
+            ) : (
+              <motion.div
+                key={currentNode.question}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h3 className="text-2xl font-bold text-gray-800 dark:text-white mb-8 text-center flex items-center justify-center">
+                  <HelpCircle className="w-8 h-8 text-blue-500 mr-3" />
                   {currentNode.question}
                 </h3>
 
-                <motion.div
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
-                  variants={{
-                    hidden: { opacity: 0 },
-                    visible: {
-                      opacity: 1,
-                      transition: { staggerChildren: 0.1 },
-                    },
-                  }}
-                  initial="hidden"
-                  animate="visible"
-                >
-                  {currentNode.options.map((option) => (
-                    <OptionButton
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {currentNode.options.map((option, index) => (
+                    <motion.div
                       key={option.text}
-                      option={option}
-                      onSelect={handleSelect}
-                    />
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      initial="hidden"
+                      animate="visible"
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <OptionButton option={option} onSelect={handleSelect} />
+                    </motion.div>
                   ))}
-                </motion.div>
+                </div>
               </motion.div>
-            ) : (
-              <ResultCard result={currentNode} onReset={handleReset} />
             )}
           </AnimatePresence>
+        </div>
+
+        <div className="text-center text-gray-500 dark:text-gray-400 text-sm">
+          <p>Explore various career paths and find the one that matches your interests and skills</p>
         </div>
       </div>
     </section>
   )
 }
-

@@ -17,6 +17,16 @@ const AIAssistantButton: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
+  // Create axios instance with proper base URL
+  const apiClient = axios.create({
+    baseURL: import.meta.env.DEV ? 'http://localhost:5000' : '',
+    withCredentials: true,
+    timeout: 10000, // 10 second timeout
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -42,18 +52,49 @@ const AIAssistantButton: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post(
-        '/api/chat/message',
-        { message: userMessage },
-        { withCredentials: true } // ✅ include cookies
-      );
+      console.log('🚀 Sending message to:', '/api/chat/message');
+      console.log('📝 Message:', userMessage);
 
-      setMessages(prev => [...prev, { sender: 'ai', text: data.response }]);
-    } catch (err) {
-      console.error('AI chat error:', err);
+      const { data } = await apiClient.post('/api/chat/message', { 
+        message: userMessage 
+      });
+
+      console.log('✅ Response received:', data);
+
+      if (data.success) {
+        setMessages(prev => [...prev, { sender: 'ai', text: data.response }]);
+      } else {
+        throw new Error(data.message || 'Unknown server error');
+      }
+    } catch (err: any) {
+      console.error('💥 AI chat error:', err);
+      
+      let errorMessage = "Sorry, I'm having trouble connecting. Please try again later.";
+      
+      if (err.code === 'ECONNABORTED') {
+        errorMessage = 'Request timeout. Please check your connection and try again.';
+      } else if (err.response) {
+        const status = err.response.status;
+        switch (status) {
+          case 401:
+            errorMessage = 'Please log in to use the AI assistant.';
+            break;
+          case 429:
+            errorMessage = 'Too many messages. Please wait a moment before trying again.';
+            break;
+          case 500:
+            errorMessage = 'Server error. Please try again in a few moments.';
+            break;
+          default:
+            errorMessage = `Error (${status}): ${err.response.data?.message || 'Please try again'}`;
+        }
+      } else if (err.request) {
+        errorMessage = 'Cannot connect to server. Please check your internet connection.';
+      }
+
       setMessages(prev => [
         ...prev,
-        { sender: 'ai', text: "Sorry, I'm having trouble connecting. Please try again later." },
+        { sender: 'ai', text: errorMessage },
       ]);
     } finally {
       setIsLoading(false);

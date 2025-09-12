@@ -31,6 +31,7 @@ import Scholarships from './pages/Scholarships';
 import Timeline from './pages/Timeline';
 import CareerSearch from './pages/CareerSearch';
 import QuizInterface from './components/QuizInterface';
+import LiveMentorship from './pages/LiveMentorship';
 
 
 function App() {
@@ -60,7 +61,7 @@ function App() {
               <Route path="news" element={<ProtectedRoute><News /></ProtectedRoute>} />
               <Route path="apply" element={<ProtectedRoute><Apply /></ProtectedRoute>} />
               <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-              
+              <Route path="live-mentorship" element={<ProtectedRoute><LiveMentorship /></ProtectedRoute>} />
 
 
               {/* Public Routes */}

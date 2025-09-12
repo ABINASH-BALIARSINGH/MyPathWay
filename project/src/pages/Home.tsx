@@ -21,6 +21,8 @@ import {
     MapPin,
     Briefcase, // Added for Career Companion
     Compass,    // Added for Career Companion button
+    Video,      // Added for Live Mentorship
+    PhoneCall,  // Added for Live Mentorship button
 } from 'lucide-react';
 
 // Separate Modal Component to prevent re-rendering
@@ -394,23 +396,23 @@ const Home = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <motion.div variants={fadeInUp}>
                                  <div className="flex items-center space-x-3 mb-6">
-                                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
-                                           <Rocket className="w-6 h-6 text-white" />
-                                      </div>
-                                      <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chart Your Future</h2>
+                                     <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                                         <Rocket className="w-6 h-6 text-white" />
+                                     </div>
+                                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Chart Your Future</h2>
                                  </div>
                                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
                                     Feeling lost in the maze of career options? Our interactive Career Search tool provides a step-by-step flowchart to help you discover the perfect path based on your education and interests.
                                  </p>
                                  <Link to="/career-search">
-                                      <motion.button
-                                           whileHover={{ scale: 1.02 }}
-                                           whileTap={{ scale: 0.98 }}
-                                           className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
-                                      >
-                                           <MapPin className="w-5 h-5" />
-                                           <span>Find Your Career Path</span>
-                                      </motion.button>
+                                     <motion.button
+                                         whileHover={{ scale: 1.02 }}
+                                         whileTap={{ scale: 0.98 }}
+                                         className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                                     >
+                                         <MapPin className="w-5 h-5" />
+                                         <span>Find Your Career Path</span>
+                                     </motion.button>
                                  </Link>
                             </motion.div>
                             <motion.div variants={fadeInUp} className="hidden lg:flex justify-center items-center">
@@ -421,7 +423,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* NEW: Career Companion Section */}
+            {/* Career Companion Section */}
             <section className="py-20 bg-gray-50 dark:bg-gray-800/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div 
@@ -437,23 +439,23 @@ const Home = () => {
                             </motion.div>
                             <motion.div variants={fadeInUp}>
                                  <div className="flex items-center space-x-3 mb-6">
-                                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
-                                           <Briefcase className="w-6 h-6 text-white" />
-                                      </div>
-                                      <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Meet Your Career Companion</h2>
+                                     <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center">
+                                         <Briefcase className="w-6 h-6 text-white" />
+                                     </div>
+                                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Meet Your Career Companion</h2>
                                  </div>
                                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
                                     Navigate your professional journey with personalized guidance. Our Career Companion helps you identify skill gaps, suggests relevant courses, and tracks your progress towards your dream job.
                                  </p>
                                  <Link to="/career-companion">
-                                      <motion.button
-                                           whileHover={{ scale: 1.02 }}
-                                           whileTap={{ scale: 0.98 }}
-                                           className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
-                                      >
-                                           <Compass className="w-5 h-5" />
-                                           <span>Explore Your Career Plan</span>
-                                      </motion.button>
+                                     <motion.button
+                                         whileHover={{ scale: 1.02 }}
+                                         whileTap={{ scale: 0.98 }}
+                                         className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                                     >
+                                         <Compass className="w-5 h-5" />
+                                         <span>Explore Your Career Plan</span>
+                                     </motion.button>
                                  </Link>
                             </motion.div>
                         </div>
@@ -461,8 +463,48 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* AI Assistant Section */}
+            {/* NEW: Live Mentorship Section */}
             <section className="py-20 bg-white dark:bg-gray-900">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <motion.div 
+                        initial="initial" 
+                        whileInView="animate" 
+                        viewport={{ once: true, amount: 0.3 }} 
+                        variants={staggerChildren}
+                        className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-8 md:p-12 border border-amber-100 dark:border-amber-800"
+                    >
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <motion.div variants={fadeInUp}>
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                                        <Video className="w-6 h-6 text-white" />
+                                    </div>
+                                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Connect with Experts</h2>
+                                </div>
+                                <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+                                    Accelerate your learning with one-on-one guidance from industry veterans. Get personalized feedback, career advice, and real-world insights to navigate your professional path with confidence.
+                                </p>
+                                <Link to="/live-mentorship">
+                                    <motion.button
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="bg-gradient-to-r from-amber-600 to-orange-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2"
+                                    >
+                                        <PhoneCall className="w-5 h-5" />
+                                        <span>Find Your Mentor</span>
+                                    </motion.button>
+                                </Link>
+                            </motion.div>
+                            <motion.div variants={fadeInUp} className="hidden lg:flex justify-center items-center">
+                                <Users className="w-64 h-64 text-amber-100 dark:text-amber-900/50 rotate-12" strokeWidth={1}/>
+                            </motion.div>
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+            
+            {/* AI Assistant Section */}
+            <section className="py-20 bg-gray-50 dark:bg-gray-800/50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <motion.div initial="initial" whileInView="animate" viewport={{ once: true }} variants={staggerChildren} className="text-center mb-12">
                         <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Meet Your AI Learning Companion</motion.h2>
