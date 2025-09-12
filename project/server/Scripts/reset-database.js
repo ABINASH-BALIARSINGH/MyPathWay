@@ -13,26 +13,33 @@ async function resetDatabase() {
     console.log('Dropped existing tables');
 
     // Create users table
-await pool.execute(`
-  CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    role ENUM('learner','admin') NOT NULL DEFAULT 'learner',
-    skills JSON NOT NULL,
-    courses_completed JSON NOT NULL,
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  )
-`);
+    await pool.execute(`
+      CREATE TABLE users (
+        id VARCHAR(36) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(50) NOT NULL DEFAULT 'learner',
+        avatar VARCHAR(500) DEFAULT NULL,
+        skills JSON NOT NULL,
+        courses_completed JSON NOT NULL,
+        total_courses INT DEFAULT 0,
+        certificates_earned INT DEFAULT 0,
+        tests_taken INT DEFAULT 0,
+        average_score DECIMAL(5,2) DEFAULT 0,
+        is_active BOOLEAN DEFAULT TRUE,
+        email_verified BOOLEAN DEFAULT FALSE,
+        last_login TIMESTAMP NULL DEFAULT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      )
+    `);
 
     // Create user_sessions table
     await pool.execute(`
       CREATE TABLE user_sessions (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id VARCHAR(36) NOT NULL,
         token VARCHAR(500) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -43,7 +50,7 @@ await pool.execute(`
     await pool.execute(`
       CREATE TABLE password_reset_tokens (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id VARCHAR(36) NOT NULL,
         token VARCHAR(500) NOT NULL,
         expires_at TIMESTAMP NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
