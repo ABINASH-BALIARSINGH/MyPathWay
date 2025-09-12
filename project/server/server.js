@@ -9,6 +9,8 @@ const { initializeDatabase } = require("./config/database");
 const authRoutes = require("./routes/auth");
 const chatRoutes = require("./routes/chat");
 const collegeRoutes = require('./routes/colleges');
+// Add this import
+const quizRoutes = require('./routes/quiz');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -54,6 +56,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/chat", chatRoutes);
 app.use('/api/colleges', collegeRoutes);
+app.use('/api/quiz', quizRoutes);
 
 // 404 handler
 app.use("*", (req, res) => {
@@ -80,6 +83,16 @@ process.on("SIGINT", () => process.exit(0));
 const startServer = async () => {
   try {
     await initializeDatabase();
+
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        const { seedQuizData } = require('./seeders/quizSeeder');
+        await seedQuizData();
+      } catch (error) {
+        console.log('Quiz data already exists or seeder failed:', error.message);
+      }
+    }
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`🔗 API URL: http://localhost:${PORT}/api`);

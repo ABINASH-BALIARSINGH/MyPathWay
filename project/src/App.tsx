@@ -29,6 +29,7 @@ import Colleges from './pages/Colleges';
 import Scholarships from './pages/Scholarships';
 import Timeline from './pages/Timeline';
 import CareerSearch from './pages/CareerSearch';
+import QuizInterface from './components/QuizInterface';
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
               <Route path="contact" element={<Contact />} />
               <Route path="faq" element={<FAQ />} />
               <Route path="careers" element={<Careers />} />
+              <Route path="/quiz/:quizId/take" element={<QuizInterface />} />
             </Route>
           </Routes>
         </Router>
